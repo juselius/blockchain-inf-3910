@@ -8,6 +8,7 @@ group Server
     nuget Microsoft.AspNetCore
     nuget Microsoft.AspNetCore.StaticFiles
     nuget Thoth.Json.Giraffe
+    nuget MQTTnet
 
 group Client
     source https://api.nuget.org/v3/index.json
@@ -28,7 +29,7 @@ group Build
     storage: none
 
     clitool dotnet-fake
-    nuget FSharp.Core 
+    nuget FSharp.Core
     nuget Fake.Core.Target
     nuget Fake.DotNet.Cli
     nuget Fake.IO.FileSystem

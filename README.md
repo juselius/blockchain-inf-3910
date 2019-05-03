@@ -1,22 +1,31 @@
-# SAFE Template
+# Exam: INF-3910 Blockchain
 
-This template can be used to generate a full-stack web application using the [SAFE Stack](https://safe-stack.github.io/). It was created using the dotnet [SAFE Template](https://safe-stack.github.io/docs/template-overview/). If you want to learn more about the template why not start with the [quick start](https://safe-stack.github.io/docs/quickstart/) guide?
-
-## Install pre-requisites
+## Install pre-requisites for developing
 
 You'll need to install the following pre-requisites in order to build SAFE applications
 
-* The [.NET Core SDK](https://www.microsoft.com/net/download)
+* The [.NET Core SDK 2.2](https://www.microsoft.com/net/download)
 * [FAKE 5](https://fake.build/) installed as a [global tool](https://fake.build/fake-gettingstarted.html#Install-FAKE)
 * The [Yarn](https://yarnpkg.com/lang/en/docs/install/) package manager (you an also use `npm` but the usage of `yarn` is encouraged).
 * [Node LTS](https://nodejs.org/en/download/) installed for the front end components.
 * If you're running on OSX or Linux, you'll also need to install [Mono](https://www.mono-project.com/docs/getting-started/install/).
 
-## Work with the application
+## Docker images
+
+To build a Docker image from source:
+
+```sh
+docker build -t blockchain .
+```
+
+## Developing the application
 
 To concurrently run the server and the client components in watch mode use the following command:
 
 ```bash
+mono .paket/paket.exe install
+yarn install
+dotnet restore
 fake build -t Run
 ```
 
