@@ -46,14 +46,14 @@ are accepted into the chain (e.g. user X has only voted once in election E).
       "previous_hash": "c099bc...bfb7",
       "proof": 35293,
       "timestamp": 1506280664.717925,
-      "transactions": [ { ... } ]
+      "transactions": [ { "..." } ]
     },
     {
       "index": 3,
       "previous_hash": "eff91a...10f2",
       "proof": 35089,
       "timestamp": 1506280666.1086972,
-      "transactions": [ { ... } ]
+      "transactions": [ { "..." } ]
     }
   ]
 ```
@@ -222,9 +222,9 @@ Ballot:
 ```json
 {
     "ballot": {
-        "election": election.id,
-        "choice": election.options[x],
-        "voter": voter.id,
+        "election": "election.id",
+        "choice": "election.options[x]",
+        "voter": "voter.id",
         "tx": "transaction hash of the election"
     },
     "signature": "RSA signature of the voter block"
