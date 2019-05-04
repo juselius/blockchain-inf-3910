@@ -1,10 +1,10 @@
 # Exam: INF-3910 Blockchain
 
-Blockchains are surprisingly simple, but still pretty mind bending. Your task
-is to develop a simple, distributed blockchain for registering elections and
-public voting. The system will use RSA public key cryptography for digital
-signing and verification, and the MQTT pub-sub protocol for communication
-between nodes.
+Blockchains are pretty mind bending, but surprisingly simple at the core.
+Your task is to develop a simple, distributed blockchain for registering
+elections and public voting. The system will use RSA public key cryptography
+for digital signing and verification, and the MQTT pub-sub protocol for
+communication between nodes.
 
 You will be given a stub project, with plenty of helper functions to get you quickly started.
 
@@ -14,7 +14,7 @@ more advanced details which are beyond this exercise. I also assume familarity w
 
 ## Theory
 
-### Blocks and block chain
+### Blocks and the block chain
 
 A blockchain is just a singly linked list, where every element of the list contains:
 
@@ -157,7 +157,14 @@ transaction fees, etc.).
   where new transactions arrive slower than the PoW chanllenge, this defeats
   the PoW concept.
 
-## Transactions
+#### Transaction queue
+
+The transaction queue holds all transactions which have not yet been added to a block. The first thing a node does when receiving a new transaction is to broadcast it, to ensure it's not lost if the receiving node goes down. Then it's added to the transaction que, awaiting to be added to a new block or pruned. 
+
+When a node has completed the PoW it selects a number of transactions from
+the queue, adds them to the block, and remove them from the queue. When a node receives a block, it checks the transactions and removes any matching transactions from the queue so that they are not included twice. 
+
+### Transactions
 
 A transaction in a blockchain can in principle be anything (i.e. a blob), but
 typically blockchains enforce some set of rules for valid transactions.
@@ -175,14 +182,57 @@ The transaction protocol ensures that:
 2. Elections are uniqe and conform to the election format
 3. Votes are signed with the voters private key and are cast only once in a particular election
 
-### Transaction queue
+#### Transaction formats for the election system
 
-The transaction queue holds all transactions which have not yet been added to a block. The first thing a node does when receiving a new transaction is to broadcast it, to ensure it's not lost if the receiving node goes down. Then it's added to the transaction que, awaiting to be added to a new block or pruned. 
+Election:
 
-When a node has completed the PoW it selects a number of transactions from
-the queue, adds them to the block, and remove them from the queue. When a node receives a block, it checks the transactions and removes any matching transactions from the queue so that they are not included twice. 
+```json
+{
+    "election": {
+        "id": "unique string",
+        "name": "string",
+        "description": "string",
+        "options": [
+            {
+                "name": "string",
+                "description": "string"
+            }
+        ],
+        "allowed_voters": [],
+        "closes": "date and time"
+    },
+    "signature": "RSA signature of the election block"
+}
+```
 
-## MQTT
+Voter:
+
+```json
+{
+    "voter": {
+        "id": "base64 encoded sha256 has of the public key",
+        "pubkey": "base64 encoded public key"
+    },
+    "signature": "RSA signature of the voter block"
+}
+```
+
+Ballot:
+
+```json
+{
+    "ballot": {
+        "election": election.id,
+        "choice": election.options[x],
+        "voter": voter.id,
+        "tx": "transaction hash of the election"
+    },
+    "signature": "RSA signature of the voter block"
+}
+
+```
+
+### MQTT
 
 MQTT is a light-weight publish-subscribe protocol, standard
 in the IoT world. MQTT works by having a (number of connected) central MQTT
@@ -193,6 +243,38 @@ a topic. Messaging is event driven and everything happens asynchronously.
 In this exercise we will use MQTT to broadcast new transactions to the
 network, and to publish new blocks. We also use MQTT to publish the node name
 (GUID) and URL of a node when it connects.
+
+## Exercises
+
+### 1. Blockchain
+
+1. Implement a block chain structure to add a number of unverified "blob"
+   transactions to a new block. New blocks should include the proof of work and
+   the hash of the previous block.
+2. Create a REST API to add new transactions to the chain.
+3. In the Elections project, add a command line interface to add a new transaction
+
+### 2. Consensus
+
+1. Implement a multi-node blockchain network over MQTT, using the provided MQTT broker
+2. Implement transaction and block broadcasting over MQTT
+3. Implement longest chain consensus
+4. Implement chain backtracking in case of a forked chain
+
+### 3. Voting
+
+1. Implement the Election, Voter and Ballot transactions, each with it's own REST API
+2. Implement REST APIs for getting Elections, Voters and Ballots from the blockchain
+3. Implement transaction verification, ensuring that the rules of the voting process are upheld
+4. Add a simple command line interface to add voters, elections and to cast votes in the Elections project. For simplicity you can use json files on disk.
+
+### 4. Web interface
+
+Implement a web interface:
+
+1. Show the total number of registered voters
+2. List all active and closed elections
+3. Show current status of a selected election
 
 ## References
 
