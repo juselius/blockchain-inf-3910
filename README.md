@@ -252,7 +252,7 @@ network, and to publish new blocks. We also use MQTT to publish the node name
    transactions to a new block. New blocks should include the proof of work and
    the hash of the previous block.
 2. Create a REST API to add new transactions to the chain.
-3. In the Elections project, add a command line interface to add a new transaction
+3. In the Poll project, add a command line interface to add a new transaction
 
 ### 2. Consensus
 
@@ -266,7 +266,7 @@ network, and to publish new blocks. We also use MQTT to publish the node name
 1. Implement the Election, Voter and Ballot transactions, each with it's own REST API
 2. Implement REST APIs for getting Elections, Voters and Ballots from the blockchain
 3. Implement transaction verification, ensuring that the rules of the voting process are upheld
-4. Add a simple command line interface to add voters, elections and to cast votes in the Elections project. For simplicity you can use json files on disk.
+4. Add a simple command line interface to add voters, elections and to cast votes in the Poll project. For simplicity you can use json files on disk.
 
 ### 4. Web interface
 
