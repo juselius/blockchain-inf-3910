@@ -24,6 +24,8 @@ let mqttBroker () =
 let main argv =
     printfn "Starting MQTT broker"
     mqttBroker () |> Async.Start
-    printfn "Press enter to exit."
-    Console.Read () |> ignore
+    // printfn "Press enter to exit."
+    // try
+    //     Console.Read () |> ignore
+    // with | _ ->  ()
     0 // return an integer exit code

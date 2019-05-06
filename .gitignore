@@ -14,3 +14,5 @@ release.sh
 *.DotSettings.user
 deploy
 .vscode/settings.json
+key*
+*.pub

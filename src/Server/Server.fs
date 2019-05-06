@@ -71,6 +71,8 @@ let  mqttExample () =
 [<EntryPoint>]
 let main argv =
     let client = mqttExample ()
-    webHost ()
+    // webHost ()
+    // printfn "Press enter to exit."
+    // Console.Read () |> ignore
     mqttDisconnect client
     0

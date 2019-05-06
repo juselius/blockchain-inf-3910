@@ -15,11 +15,13 @@ type VoteArgs =
                 | File _ -> "JSON file with vote specification."
 type TestArgs =
     | All
+    | Key of key : string
     with
         interface IArgParserTemplate with
             member this.Usage =
                 match this with
                 | All  -> "Run all tests."
+                | Key _ -> "Use public key pair 'key'."
 type PubkeyArgs =
     | Generate of path : string
     with
@@ -50,19 +52,13 @@ let mqttTests () =
     mqttSay client "hi there"
     mqttDisconnect client
 
-let cryptoExamples () =
+let cryptoExamples keyfile =
     let proof = proofOfWork 12345 0
     let sha = sha256HashInt (12345 + proof)
     printfn "PoW = %A %A" proof sha
 
-    let rsa = RSA.Create()
-    let s = signString rsa "foo"
-    let v = verifySignature rsa s "foo"
-    let v' = verifySignature rsa s "fooo"
-    printfn "sig 0: %A" (v, v')
-
-    let priv = loadKey "identity"
-    let pub = loadKey "identity.pub"
+    let priv = loadKey keyfile
+    let pub = loadKey (keyfile + ".pub")
 
     let s1 = signString priv "test1"
     let v1 = verifySignature priv s1 "test1"
@@ -83,7 +79,8 @@ let cryptoExamples () =
 
 let testsAndExamples (args : ParseResults<TestArgs>) =
     mqttTests ()
-    cryptoExamples ()
+    let keyfile = args.GetResult Key
+    cryptoExamples keyfile
 
 let keygen (args : ParseResults<PubkeyArgs>) =
     let rsa = RSA.Create()
@@ -91,7 +88,7 @@ let keygen (args : ParseResults<PubkeyArgs>) =
     | Some path ->
         savePrivateKey rsa path
         savePublicKey rsa (path + ".pub")
-        printfn "Geneated RSA keys in %s" path
+        printfn "Geneated RSA keys: %s" path
     | None -> ()
 
 [<EntryPoint>]

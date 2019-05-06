@@ -1,15 +1,17 @@
 ﻿module Blockchain.Test
 
 open System
-open System.Diagnostics
 open Fake.Core
 open Fake.DotNet
-open Fake.IO
-open Fake.IO.FileSystemOperators
-open Fake.IO.Globbing.Operators
+let getCmdArgs args =
+    let x = String.splitStr "->" args 
+    let cmd = List.head x
+    let args' = if List.length x > 1 then x.[1] else ""
+    cmd, args'
 
-let runTool cmd args workingDir =
-    let arguments = args |> String.split ' ' |> Arguments.OfArgs
+let runTool args workingDir =
+    let cmd, args' = getCmdArgs args
+    let arguments = args' |> String.split ' ' |> Arguments.OfArgs
     Command.RawCommand (cmd, arguments)
     |> CreateProcess.fromCommand
     |> CreateProcess.withWorkingDirectory workingDir
@@ -17,22 +19,40 @@ let runTool cmd args workingDir =
     |> Proc.run
     |> ignore
 
-let runDotNetArgs cmd args workingDir =
+let runDotNet args workingDir =
+    let cmd, args' = getCmdArgs args
     let result =
-        DotNet.exec (DotNet.Options.withWorkingDirectory workingDir) cmd (" -- " + args)
+        DotNet.exec (DotNet.Options.withWorkingDirectory workingDir) cmd args'
     if result.ExitCode <> 0 then failwithf "'dotnet %s' failed in %s" cmd workingDir
 
-let runDotNet cmd workingDir =
-    runDotNetArgs cmd "" workingDir
+let runToolAsync args workingDir =
+    async { return runTool args workingDir }
 
-let runToolAsync cmd args workingDir =
-    async { return runTool cmd args workingDir }
+let runDotNetAsync args workingDir =
+    async { return runDotNet args workingDir }
 
-let runDotNetAsync cmd args workingDir =
-    async { return runDotNetArgs cmd args workingDir }
-
+let runPoll args =
+    runDotNet ("../src/Poll/bin/Debug/netcoreapp2.2/Poll.dll -> " + args)
+    
 [<EntryPoint>]
 let main argv =
-    runDotNetAsync "run" "" "../src/Broker" |> Async.Start
-    //Async.Sleep 2000 |> Async.RunSynchronously
+    runDotNetAsync "../src/Broker/bin/Debug/netcoreapp2.2/Broker.dll" "." |> Async.Start
+    runDotNetAsync "./bin/Debug/netcoreapp2.2/Server.dll" "../src/Server" |> Async.Start
+    [ 1 .. 5 ] 
+    |> List.iter (fun i -> 
+        let cmd = sprintf "pubkey --generate key%d" i
+        runPoll cmd "."
+    )
+    Async.Sleep 4000 |> Async.RunSynchronously
+    runPoll "test --all --key key1" "." 
+    // runPoll "election --new election1.json --key key1" "."
+    // runPoll "election --new election2.json --key key2" "."
+    // runPoll "voter --new voter1.json --key key3" "."
+    // runPoll "voter --new voter2.json --key key4" "."
+    // runPoll "voter --new voter3.json --key key5" "."
+    // runPoll "vote --cast vote1.json --voter voter1.json --key key3" "."
+    // runPoll "vote --cast vote2.json --voter voter2.json --key key4" "."
+    // runPoll "vote --cast vote3.json --voter voter3.json --key key5" "."
+    // runPoll "vote --cast vote1.json --voter voter1.json --key key4" "."
+    // runPoll "vote --cast vote1.json --voter voter2.json --key key3" "."
     0 // return an integer exit code
