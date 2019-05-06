@@ -3,18 +3,14 @@ module Blockchain.Main
 open System
 open System.IO
 open System.Threading.Tasks
-open System.Security.Cryptography
-
 open Microsoft.AspNetCore
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Hosting
 open Microsoft.Extensions.DependencyInjection
-
 open FSharp.Control.Tasks.V2
 open Giraffe
 open Shared
 open Blockchain.Mqtt
-open Blockchain.Crypto
 open System.Text
 
 let tryGetEnv = System.Environment.GetEnvironmentVariable >> function null | "" -> None | x -> Some x
@@ -53,18 +49,18 @@ let webHost () =
         .Build()
         .Run()
 
-let  mqttHandler () =
+let  mqttExample () =
     let client = mqttConnect "localhost"
     let myTopic = sprintf "client/%s" client.Options.ClientId
-    mqttSubscribe client "tx" 
+    mqttSubscribe client "tx"
     mqttSubscribe client "block"
     mqttSubscribe client "join"
     mqttSubscribe client myTopic
-    client.ApplicationMessageReceived.Add (fun x -> 
+    client.ApplicationMessageReceived.Add (fun x ->
         let topic = x.ApplicationMessage.Topic
         let payload = x.ApplicationMessage.Payload |> Encoding.UTF8.GetString
         match topic with
-        | "join" -> 
+        | "join" ->
             let who = payload
             let myUrl = sprintf "http://localhost:%d" port
             mqttSendClient client who myUrl
@@ -74,10 +70,7 @@ let  mqttHandler () =
 
 [<EntryPoint>]
 let main argv =
-    let client = mqttHandler ()
-
-    printfn "Press enter to exit."
-    Console.Read () |> ignore
-    // webHost ()
+    let client = mqttExample ()
+    webHost ()
     mqttDisconnect client
     0

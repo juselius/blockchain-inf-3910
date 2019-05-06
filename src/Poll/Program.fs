@@ -14,14 +14,12 @@ type VoteArgs =
                 match this with
                 | File _ -> "JSON file with vote specification."
 type TestArgs =
-    | Mqtt 
-    | Crypto
+    | All
     with
         interface IArgParserTemplate with
             member this.Usage =
                 match this with
-                | Mqtt  -> "Send test messages to the MQTT broker."
-                | Crypto  -> "Test cryptography functions."
+                | All  -> "Run all tests."
 type PubkeyArgs =
     | Generate of path : string
     with
@@ -53,22 +51,35 @@ let mqttTests () =
     mqttDisconnect client
 
 let cryptoExamples () =
-    let rsa = RSA.Create()
-    let s = signString rsa "foo"
-    let v = verifySignature rsa s "foo" 
-    let v' = verifySignature rsa s "fooo"
-    printfn "%A" (v, v')
-
     let proof = proofOfWork 12345 0
     let sha = sha256HashInt (12345 + proof)
     printfn "PoW = %A %A" proof sha
 
+    let rsa = RSA.Create()
+    let s = signString rsa "foo"
+    let v = verifySignature rsa s "foo"
+    let v' = verifySignature rsa s "fooo"
+    printfn "sig 0: %A" (v, v')
+
     let priv = loadKey "identity"
-    
+    let pub = loadKey "identity.pub"
+
     let s1 = signString priv "test1"
     let v1 = verifySignature priv s1 "test1"
     let v2 = verifySignature priv s1 "test2"
-    printfn "sig 1: %A %A" v1 v2
+    printfn "sig 1: %A " (v1, v2)
+
+    // encrypt with private key
+    let e1 = encryptString priv "test1"
+    let d1 = decryptString priv e1
+    let d2 = decryptString pub e1
+    printfn "dec 1: %A " (d1, d2)
+
+    // encrypt with public key
+    let e2 = encryptString pub "test2"
+    let d1' = decryptString priv e2
+    let d2' = decryptString pub e2
+    printfn "dec 2: %A " (d1', d2')
 
 let testsAndExamples (args : ParseResults<TestArgs>) =
     mqttTests ()
@@ -77,7 +88,7 @@ let testsAndExamples (args : ParseResults<TestArgs>) =
 let keygen (args : ParseResults<PubkeyArgs>) =
     let rsa = RSA.Create()
     match args.TryGetResult Generate with
-    | Some path -> 
+    | Some path ->
         savePrivateKey rsa path
         savePublicKey rsa (path + ".pub")
         printfn "Geneated RSA keys in %s" path
@@ -87,14 +98,14 @@ let keygen (args : ParseResults<PubkeyArgs>) =
 let main argv =
     let parser = ArgumentParser.Create<CLIArguments>(programName = "Poll")
     try
-        let results = parser.ParseCommandLine(inputs = argv, raiseOnUsage = true) 
-        let isVote = results.TryGetResult Vote 
-        let isPubkey = results.TryGetResult Pubkey 
-        let isTest = results.TryGetResult Test 
+        let results = parser.ParseCommandLine(inputs = argv, raiseOnUsage = true)
+        let isVote = results.TryGetResult Vote
+        let isPubkey = results.TryGetResult Pubkey
+        let isTest = results.TryGetResult Test
         if isVote.IsSome then
             ()
         else if isPubkey.IsSome then
-           keygen isPubkey.Value 
+           keygen isPubkey.Value
         else if isTest.IsSome then
             testsAndExamples isTest.Value
     with e ->

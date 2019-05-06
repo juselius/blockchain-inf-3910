@@ -7,6 +7,10 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Client", "Client\Client.fsp
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Server", "Server\Server.fsproj", "{73E8E820-C8AA-47CC-BB2B-152CA4D0B856}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Poll", "Poll\Poll.fsproj", "{81B5B928-663A-4AB8-8658-42D75BF94C26}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Broker", "Broker\Broker.fsproj", "{E7A2641F-5A9B-4B13-A7AE-7FE77A7903EF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,6 +21,14 @@ Global
 		{73E8E820-C8AA-47CC-BB2B-152CA4D0B855}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73E8E820-C8AA-47CC-BB2B-152CA4D0B855}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73E8E820-C8AA-47CC-BB2B-152CA4D0B855}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81B5B928-663A-4AB8-8658-42D75BF94C26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81B5B928-663A-4AB8-8658-42D75BF94C26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81B5B928-663A-4AB8-8658-42D75BF94C26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81B5B928-663A-4AB8-8658-42D75BF94C26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7A2641F-5A9B-4B13-A7AE-7FE77A7903EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7A2641F-5A9B-4B13-A7AE-7FE77A7903EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7A2641F-5A9B-4B13-A7AE-7FE77A7903EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7A2641F-5A9B-4B13-A7AE-7FE77A7903EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{73E8E820-C8AA-47CC-BB2B-152CA4D0B856}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
