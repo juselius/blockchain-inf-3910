@@ -315,20 +315,21 @@ Implement a web interface:
 4. The Client project is an unmodified SAFE template Client project
 5. The Test project contains a "driver" to start the Broker, N Servers, generate some keys, and stub for interacting with the system.
 
+## Hints
+
 If you find yourself in need of mutable variables in many places, remember
 that using a ``MailboxProcessor`` can be of great help to avoid unnecessary
 mutable state. You can even use Fable.Elmish without Fable on the server
 side, and handle state updates using the MVU model. It's ok to have a few
 mutable variables, but you should not need many.
 
-## Grading
+All exercises count the same in the total score. To receive an A you need to solve (most) of four exercises.
 
-Here are a few pointers to how the exercise will be graded. The most
-important thing is providing working code and a functional system. You will
-receive points for everything you get right, so you can pass even if you
-can't solve everything!
+The most important thing is providing working code and a functional system.
+You will receive points for everything you get right, so you can pass even if
+you can't solve everything!
 
-### Positive
+The following points are generally appreciated:
 
 * Use of functional constructs: Higher-order functions, currying, partial application, etc.
 * Sensible use of abstractions like functors, applicatives, monoids, computation expressions (monads), etc.
@@ -336,11 +337,6 @@ can't solve everything!
 * Use of types to ensure safety and making invalid state hard to represent
 * Tidy and clean code with consistent formatting (use the same formatting as provided in the stub code)
 
-### Negative
-
-* Excessive use of mutable variables
-* Using an object-oriented style (e.g. writing F# like it was C# with a funny syntax)
-* Messy code base
 
 ## References
 
