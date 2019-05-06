@@ -12,6 +12,10 @@ open Giraffe
 open Shared
 open Blockchain.Mqtt
 open System.Text
+open System.Threading
+open System
+open MQTTnet.Channel
+open MQTTnet.Client
 
 let tryGetEnv = System.Environment.GetEnvironmentVariable >> function null | "" -> None | x -> Some x
 
@@ -49,8 +53,7 @@ let webHost () =
         .Build()
         .Run()
 
-let  mqttExample () =
-    let client = mqttConnect "localhost"
+let  mqttExample (client : IMqttClient) =
     let myTopic = sprintf "client/%s" client.Options.ClientId
     mqttSubscribe client "tx"
     mqttSubscribe client "block"
@@ -66,13 +69,16 @@ let  mqttExample () =
             mqttSendClient client who myUrl
         | _ -> printfn "mqtt: %s: %s" topic payload
     )
-    client
+    Async.Sleep Timeout.Infinite
 
 [<EntryPoint>]
 let main argv =
-    let client = mqttExample ()
-    // webHost ()
-    // printfn "Press enter to exit."
-    // Console.Read () |> ignore
-    mqttDisconnect client
+    let client = mqttConnect "localhost"
+    try
+        mqttExample client |> Async.RunSynchronously
+        // printfn "Press enter to exit."
+        // Console.Read () |> ignore
+        // webHost ()
+    finally
+        mqttDisconnect client
     0
