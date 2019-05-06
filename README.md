@@ -8,8 +8,8 @@ communication between nodes.
 
 You will be given a stub project, with plenty of helper functions to get you quickly started.
 
-You should read [Reference 1][Learn blockchains by building one] before
-continuing. [Reference 2][Mastering Bitcoin] contains a very detailed description of the
+You should read [Reference 1](Learn blockchains by building one) before
+continuing. [Reference 2](Mastering Bitcoin) contains a very detailed description of the
 Bitcoin blockchain, and is a great resource for more advanced details which
 are beyond this exercise. I also assume familarity with cryptographic hash
 functions and public key cryptography.
