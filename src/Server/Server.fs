@@ -1,4 +1,4 @@
-module Blockchain.Main
+module Blockchain.Server
 
 open System
 open System.IO
