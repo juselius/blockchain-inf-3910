@@ -13,3 +13,4 @@ release.sh
 .idea/
 *.DotSettings.user
 deploy
+.vscode/settings.json
