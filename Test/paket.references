@@ -1,0 +1,5 @@
+group Test
+    FSharp.Core
+    Fake.Core.Target
+    Fake.DotNet.Cli
+    Fake.IO.FileSystem
