@@ -76,6 +76,7 @@ let main argv =
     let client = mqttConnect "localhost"
     try
         mqttExample client |> Async.RunSynchronously
+        AppDomain.CurrentDomain.ProcessExit.Add (fun _ -> exit 0)
         // printfn "Press enter to exit."
         // Console.Read () |> ignore
         // webHost ()
