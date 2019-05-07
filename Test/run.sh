@@ -3,9 +3,14 @@
 trap 'kill $(jobs -p)' EXIT
 
 dotnet ../src/Broker/bin/Debug/netcoreapp2.2/Broker.dll &
-dotnet ../src/Server/bin/Debug/netcoreapp2.2/Server.dll &
 
-sleep 2
+sleep 1
+
+SERVER_PORT=8085 dotnet ../src/Server/bin/Debug/netcoreapp2.2/Server.dll &
+SERVER_PORT=8086 dotnet ../src/Server/bin/Debug/netcoreapp2.2/Server.dll &
+SERVER_PORT=8087 dotnet ../src/Server/bin/Debug/netcoreapp2.2/Server.dll &
+
+sleep 1
 
 poll () {
     dotnet ../src/Poll/bin/Debug/netcoreapp2.2/Poll.dll $*
