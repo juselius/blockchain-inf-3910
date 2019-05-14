@@ -73,12 +73,11 @@ let  mqttExample (client : IMqttClient) =
 
 [<EntryPoint>]
 let main argv =
-    let client = mqttConnect "localhost"
-    try
-        mqttExample client |> Async.RunSynchronously
-        // printfn "Press enter to exit."
-        // Console.Read () |> ignore
-        // webHost ()
-    finally
-        mqttDisconnect client
+    let client =
+        try
+            mqttConnect "localhost" |> Some
+        with _ -> None
+    client |> Option.map (mqttExample >> Async.Start) |> ignore
+    webHost ()
+    client |> Option.map mqttDisconnect |> ignore
     0
