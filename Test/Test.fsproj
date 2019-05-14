@@ -7,5 +7,10 @@
   <ItemGroup>
     <Compile Include="Program.fs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\src\Server\Server.fsproj" />
+    <ProjectReference Include="..\src\Poll\Poll.fsproj" />
+    <ProjectReference Include="..\src\Broker\Broker.fsproj" />
+  </ItemGroup>
   <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>

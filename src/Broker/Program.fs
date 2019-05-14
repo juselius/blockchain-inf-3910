@@ -30,6 +30,7 @@ let mqttBroker () =
 let main argv =
     printfn "Starting MQTT broker"
     mqttBroker () |> Async.RunSynchronously
+    AppDomain.CurrentDomain.ProcessExit.Add (fun _ -> exit 0)
     // printfn "Press enter to exit."
     // Console.Read () |> ignore
     0 // return an integer exit code
