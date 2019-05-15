@@ -1,0 +1,13 @@
+version: "3.5"
+
+services:
+    mqtt-service:
+        image: mqtt
+        build:
+            context: .
+            dockerfile: ./src/Broker/Mqtt.Dockerfile
+        hostname: mqtt-service
+        ports:
+            - 1883:1883
+        environment:
+            - MQTT_SERVER_ADDRESS=0.0.0.0
