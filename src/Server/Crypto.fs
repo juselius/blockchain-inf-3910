@@ -27,12 +27,12 @@ let exportPublicKey (rsa : RSA) =
     let param = [
         p.Modulus
         p.Exponent
-        p.Exponent
-        p.Exponent
-        p.Exponent
-        p.Exponent
-        p.Exponent
-        p.Exponent
+        // Array.empty // p.Exponent
+        // Array.empty // p.Exponent
+        // Array.empty // p.Exponent
+        // Array.empty // p.Exponent
+        // Array.empty // p.Exponent
+        // Array.empty // p.Exponent
     ]
     List.map Convert.ToBase64String param
 
@@ -53,17 +53,32 @@ let importKey (comp : string array) =
     rsa.ImportParameters p
     rsa
 
-let savePrivateKey rsa path =
+let importPubKey (comp : string array) =
+    let rsa = RSA.Create()
+    let key = Array.map Convert.FromBase64String comp
+    let p =
+        RSAParameters (
+            Modulus = key.[0],
+            Exponent = key.[1]
+        )
+    rsa.ImportParameters p
+    rsa
+
+let savePrivateKey (rsa : RSA) path =
     let key = exportPrivateKey rsa
     IO.File.WriteAllLines (path, key)
 
-let savePublicKey rsa path =
+let savePublicKey (rsa : RSA) path =
     let key = exportPublicKey rsa
     IO.File.WriteAllLines (path, key)
 
 let loadKey path =
     let key = IO.File.ReadAllLines path
     importKey key
+
+let loadPubKey path =
+    let key = IO.File.ReadAllLines path
+    importPubKey key
 
 let sha256 = System.Security.Cryptography.SHA256.Create()
 

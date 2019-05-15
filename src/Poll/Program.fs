@@ -52,13 +52,10 @@ let mqttTests () =
     mqttSay client "hi there"
     mqttDisconnect client
 
-let cryptoExamples keyfile =
-    let proof = proofOfWork 12345 0
-    let sha = sha256HashInt (12345 + proof)
-    printfn "PoW = %A %A" proof sha
 
+let cryptoExamples keyfile =
     let priv = loadKey keyfile
-    let pub = loadKey (keyfile + ".pub")
+    let pub = loadPubKey (keyfile + ".pub")
 
     let s1 = signString priv "test1"
     let v1 = verifySignature priv s1 "test1"
@@ -76,6 +73,14 @@ let cryptoExamples keyfile =
     let d1' = decryptString priv e2
     let d2' = decryptString pub e2
     printfn "dec 2: %A " (d1', d2')
+
+    let p n = proofOfWork n 1
+    let x0 = 101
+    let x1 = x0 + p x0
+    let x2 = x1 + p x1
+    let x3 = x2 + p x2
+    let ps = [x1; x2; x3]
+    printfn "pow: %A" (List.zip ps (List.map verifyPoW ps))
 
 let testsAndExamples (args : ParseResults<TestArgs>) =
     mqttTests ()
