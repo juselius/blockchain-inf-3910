@@ -52,6 +52,13 @@ let mqttTests () =
     mqttSay client "hi there"
     mqttDisconnect client
 
+// apply a function over and over again lazily
+// https://en.wikipedia.org/wiki/Lazy_evaluation
+let rec iterate f value =
+    seq {
+        yield value
+        yield! iterate f (f value)
+    }
 
 let cryptoExamples keyfile =
     let priv = loadKey keyfile
@@ -81,6 +88,13 @@ let cryptoExamples keyfile =
     let x3 = x2 + p x2
     let ps = [x1; x2; x3]
     printfn "pow: %A" (List.zip ps (List.map verifyPoW ps))
+    x3
+    |> iterate (fun x ->
+        let y = x + p x
+        printfn "pow: %A" (y, verifyPoW y)
+        y)
+    |> Seq.take 5      // lazy evaluation at work
+    |> Seq.iter ignore // force evaluation
 
 let testsAndExamples (args : ParseResults<TestArgs>) =
     mqttTests ()
@@ -109,7 +123,7 @@ let main argv =
         else if isPubkey.IsSome then
            keygen isPubkey.Value
         else if isTest.IsSome then
-            testsAndExamples isTest.Value
+           testsAndExamples isTest.Value
     with e ->
         printfn "%s" e.Message
     0 // return an integer exit code
