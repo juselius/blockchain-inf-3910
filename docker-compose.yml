@@ -5,7 +5,7 @@ services:
         image: mqtt
         build:
             context: .
-            dockerfile: ./src/Broker/Mqtt.Dockerfile
+            dockerfile: ./src/Broker/Dockerfile
         hostname: mqtt-service
         ports:
             - 1883:1883
